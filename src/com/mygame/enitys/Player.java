@@ -8,10 +8,8 @@ import com.badlogic.gdx.Gdx;
  * and open the template in the editor.
  */
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -28,18 +26,17 @@ public class Player extends Entity implements java.io.Serializable {
 	};
 
 	private static final long serialVersionUID = 1L;
-	private Rectangle playerImage;
 	private Texture playerTexture;
 	private int health;
 	private String playerName;
 
 	public Player() {
 		super();
+		playerTexture = new Texture(Gdx.files.internal("Java2D_Player_Sprite.png"));
 	}
 
 	public void draw(SpriteBatch _spriteBatch) {
-		playerTexture = new Texture(Gdx.files.internal("cat.png"));
-		_spriteBatch.draw(playerTexture, 192f, 224f, 16, 16);
+		_spriteBatch.draw(playerTexture, 192f, 224f, 32, 32);
 	}
 
 	public void draw() {
