@@ -9,15 +9,17 @@ import java.util.ArrayList;
  */
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mygame.engine.CalculatePositions;
+import com.mygame.engine.InputHandler;
 import com.mygame.enitys.Player;
 import com.mygame.entitys.Enemy;
 
@@ -43,20 +45,22 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 	private static final int rows = 4;
 	private static final int cols = 4;
 
-	private static Animation walkAnimation;
-//	private static Animation walkLeftAnimation;
-//	private static Animation walkRightAnimation;
-//	private static Animation walkDownAnimation;
+	private static Animation<TextureRegion> walkAnimation;
+//	private static Animation<TextureRegion> walkLeftAnimation;
+//	private static Animation<TextureRegion> walkRightAnimation;
+//	private static Animation<TextureRegion> walkDownAnimation;
+	SpriteBatch spriteBatch;
 
-	// private static Texture playerTexture = new
-	// Texture("entity/Java2D_Player_Sprite.png");
 	private TextureRegion[] walkFrames = null;
+//	private TextureRegion[] walkLeftFrames = null;
+//	private TextureRegion[] walkDownFrames = null;
+//	private TextureRegion[] walkRightFrames = null;
 	private TextureRegion currentFrame = null;
 
-	private float stateTime = 0.0f;
+	private float stateTime;
 
 	public WorldScreen() {
-
+		System.out.println("WorldScreen");
 		// ToDo Timer für die automatische speicherung des Spielers
 		// safePlayerTimer.start();
 
@@ -66,7 +70,7 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 		renderer = new OrthogonalTiledMapRenderer(map);
 
 		// setting up opbjects
-		camera.zoom = 0.6f;
+		camera.zoom = 0.4f;
 		camera.setToOrtho(false);
 		// camera.update();
 
@@ -84,29 +88,43 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 
 		player = new Player();
 		player.setPosition(192f, 224f);
+		player.setVelocity(20.0f);
 
-		// calculatePosition = new CalculatePositions();
-		// calculatePosition.start();
+		calculatePosition = new CalculatePositions();
+		calculatePosition.start();
 
-//        TextureRegion[][] tmp = TextureRegion.split(playerTexture, playerTexture.getWidth() / cols, playerTexture.getHeight() / rows);
-//        walkFrames = new TextureRegion[(cols * rows)];
-//        int index = 0;
-//
-//        for (int i = 0; i < rows; i++) {
-//                for (int j = 0; j < cols; j++) {
-//                        walkFrames[index++] = tmp[3][j];
-//                }
-//
-//        }
-//
-//        walkAnimation = new Animation(0.220f, walkFrames);
+		TextureRegion[][] tmp = TextureRegion.split(player.getTexture(), player.getTexture().getWidth() / cols, player.getTexture().getWidth() / rows);
+		TextureRegion[] test = TextureRegion.split(player.getTexture(), 32, 32)[4];
+		walkFrames = new TextureRegion[cols * rows];
+//		walkLeftFrames = new TextureRegion[(cols * rows)];
+//		walkDownFrames = new TextureRegion[(cols * rows)];
+//		walkRightFrames = new TextureRegion[(cols * rows)];
+		int index = 0;
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				walkFrames[index++] = tmp[4][j];
+//				walkLeftFrames[index++] = tmp[1][j];
+//				walkDownFrames[index++] = tmp[0][j];
+//				walkRightFrames[index++] = tmp[2][j];
+			}
+
+		}
+
+		walkAnimation = new Animation<TextureRegion>(0.225f, test);
+		spriteBatch = new SpriteBatch();
+		stateTime = 0f;
+//		walkDownAnimation = new Animation<TextureRegion>(0.220f, walkDownFrames);
+//		walkLeftAnimation = new Animation<TextureRegion>(0.220f, walkLeftFrames);
+//		walkRightAnimation = new Animation<TextureRegion>(0.220f, walkRightFrames);
 	}
 
 	@Override
 	public void render(float f) {
 		// clearing up the screen an make a black background
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		// Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		 Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		 stateTime += Gdx.graphics.getDeltaTime();
 		// World.step(timeStep, velocityIterations, positionIterations);
 
 		// set the camera to either the player or the min/max of the camera based on
@@ -114,16 +132,21 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 
 		camera.update();
 		renderer.setView(camera);
-
-		renderer.render();
 		renderer.getBatch().setProjectionMatrix(camera.combined);
+		renderer.render();
+		TextureRegion frame = (TextureRegion) walkAnimation.getKeyFrame(stateTime, true);
+	    
+		// renderer.render();
+//		renderer.getBatch().begin();
+//		renderer.getBatch().draw(new Texture(Gdx.files.internal("cat.png")), 60.0f, 40.0f);
+//		renderer.getBatch().end();
 		renderer.getBatch().begin();
-		renderer.getBatch().draw(new Texture(Gdx.files.internal("cat.png")), 60.0f, 40.0f);
+		renderer.getBatch().draw(frame, player.getX(), player.getY());
 		renderer.getBatch().end();
 
 		// renderer.getBatch().draw(new Texture(50, 50, Pixmap.Format.Alpha), 0.0f,
 		// 0.0f);
-		// renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
+		renderer.getBatch().setProjectionMatrix(camera.combined);
 
 	}
 
@@ -155,25 +178,30 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 	public void dispose() {
 		// throw new UnsupportedOperationException("Not supported yet."); //To change
 		// body of generated methods, choose Tools | Templates.
+		spriteBatch.dispose();
+		player.getTexture().dispose();
 	}
 
 	@Override
 	public void show() {
 	}
 
-	public static int getWorldSizeX() {
-		// TODO Auto-generated method stub
-		return 0;
+	public static final int getWorldSizeX() {
+		return worldSizeX;
+	}
+
+	public static final int getWorldSizeY() {
+		return worldSizeY;
 	}
 
 	public static OrthographicCamera getCamera() {
 		// TODO Auto-generated method stub
-		return null;
+		return camera;
 	}
 
 	public static Player getPlayer() {
 		// TODO Auto-generated method stub
-		return null;
+		return player;
 	}
 
 	public static Enemy getEnemy() {
