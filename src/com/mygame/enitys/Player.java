@@ -1,82 +1,61 @@
 package com.mygame.enitys;
 
-import com.badlogic.gdx.Gdx;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
  *
  * @author Martin
  */
-public class Player extends Entity implements java.io.Serializable {
-
-	/**
+public class Player extends Entity{
+    
+    /**
 	 * 
 	 */
 	enum Velocity {
 		x, y
 	};
-
 	private static final long serialVersionUID = 1L;
-	private Texture playerTexture;
-	private int health;
-	private String playerName;
+	private Rectangle playerImage;
+    
+    public Player() {
+        this.playerImage = new Rectangle();
+        playerImage.setSize(50.0f, 50.0f);
+    }
+    
+    public void render() {
+    }
 
-	public Player() {
-		super();
-		playerTexture = new Texture(Gdx.files.internal("Java2D_Player_Sprite.png"));
+	public boolean collidesLeft() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public void draw(SpriteBatch _spriteBatch) {
-		_spriteBatch.draw(playerTexture, 192f, 224f, 32, 32);
+	public boolean collidesRight() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public void draw() {
-
+	public boolean collidesBottom() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public void update(float deltaTime) {
-
+	public boolean isCellDoor(float x, float y) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public String getPlayerName() {
-		return this.playerName;
+	public Velocity getVelocity() {
+		// TODO Auto-generated method stub
+		return Velocity.x;
 	}
-
-	public int getHealth() {
-		return this.health;
-	}
-
-	public final Vector2 getVelocity() {
-		return velocity;
-	}
-	
-	public final void setVelocity(float xy) {
-		velocity.x = xy;
-		velocity.y = xy;
-	}
-
-	public final void setVelocityY(float _y) {
-		velocity.y = _y;
-	}
-
-	public final void setVelocityX(float _x) {
-		velocity.x = _x;
-	}
-
-	public final void setTexture(String _pathToTexture) {
-		playerTexture = new Texture(Gdx.files.internal(_pathToTexture));
-	}
-
-	public final Texture getTexture() {
-		return playerTexture;
-	}
+    
 }
