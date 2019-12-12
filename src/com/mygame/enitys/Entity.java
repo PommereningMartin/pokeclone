@@ -28,5 +28,6 @@ public abstract class Entity extends Rectangle{
     private static int moveDirection = 0; 
     
     public Entity(){
+    	velocity = new Vector2();
     }
 }

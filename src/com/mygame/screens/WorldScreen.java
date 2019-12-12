@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygame.engine.CalculatePositions;
 import com.mygame.enitys.Player;
 import com.mygame.entitys.Enemy;
@@ -56,7 +57,7 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 	private float stateTime = 0.0f;
 
 	public WorldScreen() {
-
+		System.out.println("WorldScreen");
 		// ToDo Timer für die automatische speicherung des Spielers
 		// safePlayerTimer.start();
 
@@ -83,10 +84,12 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 		worldSizeY = mapHeight * tilePixelHeight;
 
 		player = new Player();
+		player.setTexture("cat.png");
 		player.setPosition(192f, 224f);
+		player.setVelocity(20.0f);
 
-		// calculatePosition = new CalculatePositions();
-		// calculatePosition.start();
+		calculatePosition = new CalculatePositions();
+		calculatePosition.start();
 
 //        TextureRegion[][] tmp = TextureRegion.split(playerTexture, playerTexture.getWidth() / cols, playerTexture.getHeight() / rows);
 //        walkFrames = new TextureRegion[(cols * rows)];
@@ -105,25 +108,28 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 	@Override
 	public void render(float f) {
 		// clearing up the screen an make a black background
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		// Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// World.step(timeStep, velocityIterations, positionIterations);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		 //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		 //World.step(timeStep, velocityIterations, positionIterations);
 
 		// set the camera to either the player or the min/max of the camera based on
 		// player position
 
 		camera.update();
 		renderer.setView(camera);
-
-		renderer.render();
 		renderer.getBatch().setProjectionMatrix(camera.combined);
+		renderer.render();
+		//renderer.render();
+//		renderer.getBatch().begin();
+//		renderer.getBatch().draw(new Texture(Gdx.files.internal("cat.png")), 60.0f, 40.0f);
+//		renderer.getBatch().end();
 		renderer.getBatch().begin();
-		renderer.getBatch().draw(new Texture(Gdx.files.internal("cat.png")), 60.0f, 40.0f);
+		renderer.getBatch().draw(player.getTexture(),player.getX(), player.getY());
 		renderer.getBatch().end();
 
 		// renderer.getBatch().draw(new Texture(50, 50, Pixmap.Format.Alpha), 0.0f,
 		// 0.0f);
-		// renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
+		renderer.getBatch().setProjectionMatrix(camera.combined);
 
 	}
 
@@ -161,19 +167,20 @@ public class WorldScreen implements com.badlogic.gdx.Screen {
 	public void show() {
 	}
 
-	public static int getWorldSizeX() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public static final int getWorldSizeX()
+	{return worldSizeX;}
+	
+	public static final int getWorldSizeY()
+	{return worldSizeY;}
 
 	public static OrthographicCamera getCamera() {
 		// TODO Auto-generated method stub
-		return null;
+		return camera;
 	}
 
 	public static Player getPlayer() {
 		// TODO Auto-generated method stub
-		return null;
+		return player;
 	}
 
 	public static Enemy getEnemy() {

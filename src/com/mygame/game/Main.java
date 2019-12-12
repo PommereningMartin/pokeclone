@@ -6,18 +6,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygame.engine.InputHandler;
 import com.mygame.enitys.Player;
 import com.mygame.screens.WorldScreen;
 
 public class Main extends Game implements ApplicationListener {
 	SpriteBatch batch;
 	Texture img;
-	
+	static InputHandler inputHandler = null; 
+	Player player = null;
 	@Override
 	public void create () {
-		System.out.println("pokeclone.org.gameloop.Gameloop.create()");
-        Player player = new Player();
+        player = new Player();
+        inputHandler = new InputHandler();
+        Gdx.input.setInputProcessor(inputHandler);
         this.setScreen(new WorldScreen());
+        System.out.println("pokeclone.org.gameloop.Gameloop.create()");
 	}
 
 	@Override
