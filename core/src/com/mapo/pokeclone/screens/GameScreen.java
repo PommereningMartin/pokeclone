@@ -15,8 +15,6 @@ import com.mapo.pokeclone.engine.InputHandler;
 import com.mapo.pokeclone.entitys.Player;
 import com.mapo.pokeclone.entitys.Enemy;
 import com.mapo.pokeclone.game.PokecloneGame;
-import com.mapo.pokeclone.utils.TileCollisionManager;
-
 import java.util.ArrayList;
 
 public class GameScreen implements Screen {

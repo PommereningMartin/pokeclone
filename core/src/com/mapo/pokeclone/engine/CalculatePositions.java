@@ -46,9 +46,8 @@ public class CalculatePositions {
         if (rightMove) {
             player.setX(player.getX() + player.getVelocity().x * Gdx.graphics.getDeltaTime());
             player.setAnimation("right");
-            TiledMapTileLayer.Cell cell = this.getCell("right");
-            if ((this.isBlocked(cell))) {
-                    player.setX(player.getX() - cellWith);
+            if ((this.isBlocked(this.getCell("right")))) {
+                player.setX(player.getX() - cellWith );
             }
         }
         if (leftMove) {
