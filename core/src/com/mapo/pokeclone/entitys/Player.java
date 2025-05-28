@@ -1,4 +1,4 @@
-package com.mapo.pokeclone.enitys;
+package com.mapo.pokeclone.entitys;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

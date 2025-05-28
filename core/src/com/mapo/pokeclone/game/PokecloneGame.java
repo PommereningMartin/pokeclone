@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.mapo.pokeclone.engine.InputHandler;
-import com.mapo.pokeclone.enitys.Player;
+import com.mapo.pokeclone.entitys.Player;
 import com.mapo.pokeclone.entitys.Enemy;
 import com.mapo.pokeclone.screens.GameScreen;
 
