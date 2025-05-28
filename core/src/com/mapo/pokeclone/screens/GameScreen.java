@@ -1,9 +1,9 @@
 package com.mapo.pokeclone.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,13 +12,14 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mapo.pokeclone.engine.CalculatePositions;
 import com.mapo.pokeclone.engine.InputHandler;
-import com.mapo.pokeclone.enitys.Player;
+import com.mapo.pokeclone.entitys.Player;
 import com.mapo.pokeclone.entitys.Enemy;
 import com.mapo.pokeclone.game.PokecloneGame;
+import com.mapo.pokeclone.utils.TileCollisionManager;
 
 import java.util.ArrayList;
 
-public class GameScreen implements com.badlogic.gdx.Screen {
+public class GameScreen implements Screen {
 
     private OrthographicCamera camera = null;
     private OrthogonalTiledMapRenderer renderer = null;
@@ -33,16 +34,14 @@ public class GameScreen implements com.badlogic.gdx.Screen {
     int[] backgroundLayers = { 0, 1 }; // don't allocate every frame!
     int[] foregroundLayers = { 2 }; // don't allocate every frame!
     InputHandler inputHandler = null;
-
     final PokecloneGame game;
 
     public GameScreen(PokecloneGame game, Player player, Enemy enemy, InputHandler inputHandler) {
         this.player = player;
         TiledMap map = new TmxMapLoader().load("pokemap.tmx");
-        MapLayer collisionLayer = map.getLayers().get("Ebene1");
+        MapLayer collisionLayer = map.getLayers().get("collision");
         this.camera = new OrthographicCamera();
         this.renderer = new OrthogonalTiledMapRenderer(map);
-        TextureRegion foo = new TextureRegion(enemy.getTexture(), 192, 224, 16, 16);
 
         this.camera.zoom = 0.4f;
         this.camera.setToOrtho(false);
@@ -73,10 +72,10 @@ public class GameScreen implements com.badlogic.gdx.Screen {
         camera.update();
         renderer.setView(camera);
         renderer.getBatch().setProjectionMatrix(camera.combined);
-        renderer.render();
-        calculatePosition.run();
+        calculatePosition.calc();
         renderer.render(backgroundLayers);
         renderer.render(foregroundLayers);
+        renderer.render();
         renderer.getBatch().begin();
         renderer.getBatch().draw(player.getKeyFrame(), player.getX(), player.getY());
         renderer.getBatch().end();

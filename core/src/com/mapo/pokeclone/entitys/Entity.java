@@ -1,4 +1,4 @@
-package com.mapo.pokeclone.enitys;
+package com.mapo.pokeclone.entitys;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,8 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.io.Serializable;
 
 public abstract class Entity extends Actor implements Serializable {
-    private static final int rows = 4;
-    private static final int cols = 4;
+    private static final int cols = 4, rows = 4;
 
     private Animation<TextureRegion> animation;
     protected static boolean collisionX = false, collisionY = false;
