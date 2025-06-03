@@ -21,7 +21,8 @@ public class GameScreen implements Screen {
 
     private OrthographicCamera camera = null;
     private OrthogonalTiledMapRenderer renderer = null;
-    private Player player = null;
+    private final Player player;
+    private final Enemy enemy;
     private static MapProperties prop = null;
     private static int worldSizeX = 0;
     private static int worldSizeY = 0;
@@ -31,11 +32,11 @@ public class GameScreen implements Screen {
     private static final int cols = 4;
     int[] backgroundLayers = { 0, 1 }; // don't allocate every frame!
     int[] foregroundLayers = { 2 }; // don't allocate every frame!
-    InputHandler inputHandler = null;
     final PokecloneGame game;
 
-    public GameScreen(PokecloneGame game, Player player, Enemy enemy, InputHandler inputHandler) {
+    public GameScreen(PokecloneGame game, Player player, Enemy enemy) {
         this.player = player;
+        this.enemy = enemy;
         TiledMap map = new TmxMapLoader().load("pokemap.tmx");
         MapLayer collisionLayer = map.getLayers().get("collision");
         this.camera = new OrthographicCamera();
@@ -53,12 +54,8 @@ public class GameScreen implements Screen {
         worldSizeX = mapWidth * tilePixelWidth;
         worldSizeY = mapHeight * tilePixelHeight;
 
-        this.player.setPosition(192f, 224f);
-        this.player.setVelocity(40.0f);
-
-        calculatePosition = new CalculatePositions(this, (TiledMapTileLayer) collisionLayer);
+        calculatePosition = new CalculatePositions(camera, (TiledMapTileLayer) collisionLayer);
         this.game = game;
-        this.inputHandler = new InputHandler();
     }
 
     @Override
@@ -66,16 +63,17 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         player.settMovementTimer();
-        //World.step(timeStep, velocityIterations, positionIterations);
         camera.update();
         renderer.setView(camera);
         renderer.getBatch().setProjectionMatrix(camera.combined);
-        calculatePosition.calc();
+        calculatePosition.calculate(player);
+        calculatePosition.updateCameraPosition(player);
+        calculatePosition.calculateRandomMovement(enemy);
         renderer.render(backgroundLayers);
         renderer.render(foregroundLayers);
-        renderer.render();
         renderer.getBatch().begin();
         renderer.getBatch().draw(player.getKeyFrame(), player.getX(), player.getY());
+        renderer.getBatch().draw(enemy.getTexture(), enemy.getX(), enemy.getY(), 16, 16);
         renderer.getBatch().end();
     }
 
@@ -108,12 +106,8 @@ public class GameScreen implements Screen {
     public void show() {
     }
 
-    public static final int getWorldSizeX() {
+    public static int getWorldSizeX() {
         return worldSizeX;
-    }
-
-    public static final int getWorldSizeY() {
-        return worldSizeY;
     }
 
     public OrthographicCamera getCamera() {

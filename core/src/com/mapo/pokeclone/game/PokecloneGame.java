@@ -16,10 +16,14 @@ public class PokecloneGame extends Game implements ApplicationListener {
 	public void create () {
 		Player player = new Player();
 		player.init();
+		player.setPosition(192f, 224f);
+		player.setVelocity(40.0f);
+
 		Enemy enemy = new Enemy();
 		enemy.init();
-        InputHandler inputHandler = new InputHandler();
-		this.gameScreen = new GameScreen(this, player, enemy, inputHandler);
+		enemy.setVelocity(40.0f);
+        InputHandler inputHandler = new InputHandler(player);
+		this.gameScreen = new GameScreen(this, player, enemy);
 		Gdx.input.setInputProcessor(inputHandler);
 		this.setScreen(gameScreen);
 	}

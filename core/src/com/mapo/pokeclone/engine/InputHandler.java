@@ -2,56 +2,69 @@ package com.mapo.pokeclone.engine;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
+import com.mapo.pokeclone.entitys.Entity;
 
 
 public class InputHandler extends InputAdapter {
+    private boolean keyPressed;
+    private Entity thingToControll = null;
 
-
-    public InputHandler() {
+    public InputHandler(Entity entity) {
+        keyPressed = false;
+        thingToControll = entity;
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Keys.A:
-                CalculatePositions.setLeftMove(true);
-                CalculatePositions.player.setIsMoving(true);
-                return true;
-            case Keys.D:
-                CalculatePositions.setRightMove(true);
-                CalculatePositions.player.setIsMoving(true);
-				return true;
-            case Keys.W:
-                CalculatePositions.setTopMove(true);
-                CalculatePositions.player.setIsMoving(true);
-				return true;
-            case Keys.S:
-                CalculatePositions.setBottomMove(true);
-                CalculatePositions.player.setIsMoving(true);
-				return true;
+        if (!keyPressed) {
+            switch (keycode) {
+                case Keys.A:
+                    thingToControll.leftMove = true;
+                    thingToControll.setIsMoving(true);
+                    keyPressed = true;
+                    return true;
+                case Keys.D:
+                    thingToControll.rightMove = true;
+                    thingToControll.setIsMoving(true);
+                    keyPressed = true;
+                    return true;
+                case Keys.W:
+                    thingToControll.topMove = true;
+                    thingToControll.setIsMoving(true);
+                    keyPressed = true;
+                    return true;
+                case Keys.S:
+                    thingToControll.bottomMove = true;
+                    thingToControll.setIsMoving(true);
+                    keyPressed = true;
+                    return true;
+            }
         }
-        return true;
+        return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
         switch (keycode) {
             case Keys.A:
-                CalculatePositions.setLeftMove(false);
-                CalculatePositions.player.setIsMoving(false);
+                thingToControll.leftMove = false;
+                thingToControll.setIsMoving(false);
+                keyPressed = false;
                 break;
             case Keys.D:
-                CalculatePositions.setRightMove(false);
-                CalculatePositions.player.setIsMoving(false);
+                thingToControll.rightMove = false;
+                thingToControll.setIsMoving(false);
+                keyPressed = false;
                 break;
             case Keys.W:
-                CalculatePositions.setTopMove(false);
-                CalculatePositions.player.setIsMoving(false);
+                thingToControll.topMove = false;
+                thingToControll.setIsMoving(false);
+                keyPressed = false;
                 break;
             case Keys.S:
-                CalculatePositions.setBottomMove(false);
-                CalculatePositions.player.setIsMoving(false);
+                thingToControll.bottomMove = false;
+                thingToControll.setIsMoving(false);
+                keyPressed = false;
                 break;
         }
         return true;

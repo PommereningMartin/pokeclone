@@ -12,16 +12,13 @@ import java.io.Serializable;
 
 public abstract class Entity extends Actor implements Serializable {
     private static final int cols = 4, rows = 4;
-
+    public boolean rightMove = false;
+    public boolean leftMove = false;
+    public boolean topMove = false;
+    public boolean bottomMove = false;
     private Animation<TextureRegion> animation;
-    protected static boolean collisionX = false, collisionY = false;
-    protected static Vector2 velocity = null;
-    private static final TiledMapTileLayer collisionLayer = null;
-    private static final TiledMapTileLayer walkableLayer = null;
-    private static final String blockedKey = "blocked";
-    private static final String doorKey = "door";
     private float movementTimer = 0.0f;
-    private static final int moveDirection = 0;
+    protected Vector2 velocity = new Vector2();
     protected Texture texture;
     private TextureRegion[][] tmp;
     private static final Integer IDLE_ROW_INDEX = -1;
@@ -29,21 +26,26 @@ public abstract class Entity extends Actor implements Serializable {
     private static final Integer UP_ROW_INDEX = 1;
     private static final Integer RIGHT_ROW_INDEX = 2;
     private static final Integer LEFT_ROW_INDEX = 3;
-    private static final Integer animationTextureRegionSize = 4;
     private boolean isMoving = false;
+    // store the animations for each direction
+    private Animation<TextureRegion> topAnimation = null;
+    private Animation<TextureRegion> downAnimation = null;
+    private Animation<TextureRegion> leftAnimation = null;
+    private Animation<TextureRegion> rightAnimation = null;
+    private Animation<TextureRegion> idleAnimation = null;
 
     public Entity(){
-        super();
-    	velocity = new Vector2();
+        super();;
     }
 
     public void init() {
         this.tmp = TextureRegion.split(this.texture, 16, 16);
-        this.animation = this.idleAnimation();
-    }
-
-    private Animation<TextureRegion> idleAnimation(){
-        return this.buildAnimation(IDLE_ROW_INDEX);
+        topAnimation = this.buildAnimation(UP_ROW_INDEX);
+        downAnimation = this.buildAnimation(DOWN_ROW_INDEX);
+        leftAnimation = this.buildAnimation(LEFT_ROW_INDEX);
+        rightAnimation = this.buildAnimation(RIGHT_ROW_INDEX);
+        idleAnimation = this.buildAnimation(IDLE_ROW_INDEX);
+        this.animation = this.idleAnimation; // default animation
     }
 
     private Animation<TextureRegion> buildAnimation(Integer startRowIndex) {
@@ -56,42 +58,25 @@ public abstract class Entity extends Actor implements Serializable {
             }
             walkFrames[index++] = this.tmp[startRowIndex][j];
         }
-        // System.out.println("walkFrames: " + Arrays.toString(walkFrames));
         return new Animation<>(0.225f, walkFrames);
-    }
-
-    private Animation<TextureRegion> rightAnimation() {
-        return this.buildAnimation(RIGHT_ROW_INDEX);
-    }
-
-    private Animation<TextureRegion> leftAnimation() {
-        return this.buildAnimation(LEFT_ROW_INDEX);
-    }
-
-    private Animation<TextureRegion> downAnimation() {
-        return this.buildAnimation(DOWN_ROW_INDEX);
-    }
-
-    private Animation<TextureRegion> upAnimation() {
-        return this.buildAnimation(UP_ROW_INDEX);
     }
 
     public void setAnimation(String direction) {
         switch (direction) {
             case "up":
-                this.animation = upAnimation();
+                this.animation = this.topAnimation;
                 break;
             case "down":
-                this.animation = downAnimation();
+                this.animation = this.downAnimation;
                 break;
             case "left":
-                this.animation = leftAnimation();
+                this.animation = this.leftAnimation;
                 break;
             case "right":
-                this.animation = rightAnimation();
+                this.animation = this.rightAnimation;
                 break;
             default:
-                this.animation = idleAnimation();
+                this.animation = this.idleAnimation;
                 break;
         }
     }
@@ -106,5 +91,14 @@ public abstract class Entity extends Actor implements Serializable {
 
     public void setIsMoving(boolean _b) {
         this.isMoving = _b;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public final void setVelocity(float xy) {
+        velocity.x = xy;
+        velocity.y = xy;
     }
 }
